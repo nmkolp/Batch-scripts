@@ -1,7 +1,10 @@
 @echo off
 
-IF NOT ([%1] == []) SET input=%1
-IF [%1] == [] SET /P input="Enter minutes: "
+IF [%1] == [] (
+  SET /P input="Enter minutes: "
+) ELSE (
+  SET input=%1
+)
 GOTO check
 
 :restart
@@ -15,15 +18,18 @@ SET /P input="Enter minutes: "
 )
 
 :loopTimer
-IF %input%==0 (GOTO bell)
-IF %input%==1 @ECHO Timer starts after %input% minute
-IF %input% GTR 1 @ECHO Timer starts after %input% minutes
-SLEEP 10
+IF %input%==0 (
+  @ECHO Timer started
+  GOTO loopBell
+) ELSE IF %input%==1 (
+  @ECHO Timer starts after %input% minute
+) ELSE (
+  @ECHO Timer starts after %input% minutes
+)
+SLEEP 60
 SET /A input=input-1
 GOTO loopTimer
 
-:bell
-@ECHO Timer started
 :loopBell
 @ECHO 
 SLEEP 1
