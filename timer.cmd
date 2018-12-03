@@ -15,12 +15,15 @@ SET /P input="Enter minutes: "
 )
 
 :loopTimer
-IF %input%==0 (GOTO loopBell)
-@ECHO Timer starts after %input% minutes
+IF %input%==0 (GOTO bell)
+IF %input%==1 @ECHO Timer starts after %input% minute
+IF %input% GTR 1 @ECHO Timer starts after %input% minutes
 SLEEP 10
 SET /A input=input-1
 GOTO loopTimer
 
+:bell
+@ECHO Timer started
 :loopBell
 @ECHO 
 SLEEP 1
