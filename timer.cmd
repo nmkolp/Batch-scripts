@@ -1,40 +1,33 @@
 @echo off
 
-:: loops echo bell character after specified minutes
+:: after specified minutes loops echo the bell character
+
+:: the bell character is invisible
+SET bell=
 
 IF [%1] == [] (
-  SET /P input="Enter minutes: "
+  :inputMinutes
+    SET /P input="Enter minutes: "
+    @ECHO %input%| findstr "^[0-9][0-9]*$" >nul
+    IF errorlevel 1 (
+      GOTO :inputMinutes
+    )
 ) ELSE (
   SET input=%1
 )
-GOTO check
 
-:restart
-SET /P input="Enter minutes: "
-
-:: checks if input is a number
-:check
-@ECHO %input%|findstr "^[0-9][0-9]*$" >nul && (
-  GOTO loopTimer
-) || (
-  GOTO restart
+FOR /L %%i IN (%input%,-1,1) DO (
+  IF %%i==1 (
+    @ECHO Alarm starts after 1 minute
+  ) ELSE (
+    @ECHO Alarm starts after %%i minutes
+  )
+  TIMEOUT /T 60 /nobreak >nul
 )
 
-:loopTimer
-IF %input%==0 (
-  @ECHO Alarm started
-  GOTO loopBell
-) ELSE IF %input%==1 (
-  @ECHO Alarm starts after %input% minute
-) ELSE (
-  @ECHO Alarm starts after %input% minutes
-)
-SLEEP 60
-SET /A input=input-1
-GOTO loopTimer
+@ECHO Alarm started
 
 :loopBell
-:: echo bell character
-@ECHO 
-SLEEP 1
-GOTO loopBell
+  @ECHO %bell%
+  TIMEOUT /T 1 /nobreak >nul
+  GOTO :loopBell
